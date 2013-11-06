@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="myDB">
+    <table name="myTableName" primary_key="row_id">
+        <column name="row_id" primaryKey="true" type="int" autoincrement="true"/>
+        <column name="field_one" type="varchar (120)"/>
+        <column name="field_two" type="varchar (120)"/>
+        <column name="field_three" type="varchar (120)"/>
+        <column name="fieldFour" type="datetime"/>
+        <column name="field_five_dot_more_text" type="varchar (120)"/>
+        <column name="field_flag" type="boolean" />
+    </table>
+</database>

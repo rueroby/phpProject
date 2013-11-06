@@ -1,0 +1,106 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: $user$
+ * Date: $date$
+ * Time: $time$
+ * To change this template use File | Settings | File Templates.
+ */
+ 
+ 
+namespace $namespace$;
+
+use ruesoft\frmwrk\model\BaseQuery;
+use ruesoft\frmwrk\model\SqlitePDO;
+use ruesoft\src\$app$\model\$className$;
+
+
+class Base$className$Query extends BaseQuery
+{
+    protected function __construct(){
+        $this->stmt = "SELECT";
+        $this->select = array("*");
+        $this->fromClause = " FROM ".Base$className$::TABLE_NAME;
+
+        $this->defaultSelect .= " ";
+        $this->defaultSelect .= Base$className$::TABLE_NAME . self::DOT_DELIMITER ."_ROWID_";
+        $prefix = self::COMMA_SPACE_SEPARATOR;
+        $properties:{$this->defaultSelect .= $prefix . Base$className$::TABLE_NAME . self::DOT_DELIMITER .Base$it.name$::}$
+    }
+
+    public static function create() {
+        return new Base$className$Query();
+    }
+
+    $properties:{
+        "public function filterBy$it.name$($contactInfoId, $filterOp = null){
+        if (!empty($contactInfoId)){
+            $column = Base$it.className$::TABLE_NAME . self::DOT_DELIMITER . Base$it.className$::COLUMN_$uc(it.name)$;
+
+            if ($filterOp != null){
+                $this->filterBy($column, $contactInfoId, $filterOp);
+            }
+            else {
+                $this->filterBy($column, $contactInfoId);
+            }
+        }
+
+        return $this;
+    }"
+    }$
+    
+    $properties:{
+        "public function orderBy$it.name$(){
+        $this->orderBy(Base$it.className$::COLUMN_$uc(it.name)$, Base$it.className$::TABLE_NAME);
+
+        return $this;
+    }"
+        }$
+
+    public function find(){
+        if ($db = SqlitePDO::open(BaseContactInfo::DATABASE)){
+            $this->query = $this->stmt . $this->getSelectedColumns() . $this->getFromClause() . $this->getWhereClause() . $this->getOrderByClause();
+
+            $result = $db->query($this->query);
+            if ($result === false){
+                print_r($db->errorInfo());
+            }
+            else {
+                $coll = array();
+
+                /* @var $result PDOStatement */
+                $rows = $result->fetchAll();
+//                var_dump($rows);
+                foreach($rows as $row){
+                    $contactInfo = new ContactInfo();
+                    $contactInfo->setContactInfoId($row[BaseContactInfo::COLUMN_CONTACT_INFO_ID]);
+//                    $contactInfo->setContactInfoId($row["rowid"]);
+                    $contactInfo->setFirstName($row[BaseContactInfo::COLUMN_FIRST_NAME]);
+                    $contactInfo->setLastName($row[BaseContactInfo::COLUMN_LAST_NAME]);
+                    $contactInfo->setAddress($row[BaseContactInfo::COLUMN_ADDRESS]);
+                    $contactInfo->setCity($row[BaseContactInfo::COLUMN_CITY]);
+                    $contactInfo->setState($row[BaseContactInfo::COLUMN_STATE]);
+                    $contactInfo->setZipCode($row[BaseContactInfo::COLUMN_ZIPCODE]);
+
+                    array_push($coll, $contactInfo);
+                }
+
+                return $coll;
+            }
+        }
+        else {
+            print_r($db->errorInfo());
+        }
+
+        return null;
+    }
+
+    public function findPk($pk){
+        $this->filterByContactInfoId($pk);
+
+        $coll = $this->find();
+        if ($coll) return $coll[0];
+        return null;
+    }
+
+}

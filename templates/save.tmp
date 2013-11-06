@@ -1,0 +1,43 @@
+    public function save(){
+        if ($db = SqlitePDO::open(self::DATABASE))
+        {
+            $stmt = 'CREATE TABLE IF NOT EXISTS ';
+            $stmt .= self::TABLE_NAME;
+            $stmt .= " {<name> <type>|, |:$array}";
+            $ok = $db->exec($stmt);
+            if ($ok === false){
+                print_r("SQL stmt: " . $stmt);
+                print_r($db->errorInfo());
+                exit();
+            }
+
+            if (!$this->contactInfoId){
+                $stmt = "INSERT INTO ".self::TABLE_NAME;
+                $stmt .= " VALUES (NULL";
+                {"\$stmt .= \", '\". $this-><[0]>;": $array}
+                {"$stmt .= \"', '\". $this-><name>;":$array}
+                $stmt .= "');";
+                $count = $db->exec($stmt);
+                if ($count === false){
+                    print_r('Exec stmt: '.$stmt);
+                    print_r($db->errorInfo());
+                }
+            }
+            else { // this is an update
+                $stmt = "UPDATE ".self::TABLE_NAME." SET ". {};
+                {array: }
+                $stmt .= "' WHERE ".{primaryKey: };
+                $stmt .= ";";
+
+                $count = $db->exec($stmt);
+                if ($count === false){
+                    print_r('Exec stmt: '.$stmt);
+                    print_r($db->errorInfo());
+                }
+            }
+        }
+        else {
+            print_r($db->errorInfo());
+        }
+    }
+

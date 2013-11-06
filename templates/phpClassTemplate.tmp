@@ -1,0 +1,10 @@
+class $className$ $extends$
+{
+    $classConstants$
+    $privateProperties$
+    $protectedProperties$
+    
+    $accessors$
+    
+    $methods$
+}

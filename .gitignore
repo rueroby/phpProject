@@ -1,0 +1,9 @@
+composer.phar
+composer.lock
+package.xml
+xdebug-2.2.3.tgz
+*.prj
+*.pui
+.idea/
+vendor/
+xdebug-2.2.3/

@@ -1,0 +1,78 @@
+<?php
+{@comment_header}
+{@namespace}
+
+{@use}
+
+class {@className} {
+    const DATABASE = "{@db_path}";
+    const TABLE_NAME = '{@tableName}';
+
+    {@template:"const COLUMN_@uc(<entry>) = \"<entry>\";",const_columns}
+    
+    {@template:"protected $@phpName(<entry>);"protected_fields}
+
+    public function __construct({@template:construct_parameters}){
+        {@template:initialize_class}
+    }
+
+    {@template:get_accessors}
+    {@template:set_accessors}
+    
+    public function save(){
+        if ($db = SqlitePDO::open(self::DATABASE))
+        {
+            $stmt = 'CREATE TABLE IF NOT EXISTS ';
+            $stmt .= self::TABLE_NAME;
+            $stmt .= " {@template:create_table_parameters}";
+            $ok = $db->exec($stmt);
+            if ($ok === false){
+                print_r("SQL stmt: " . $stmt);
+                print_r($db->errorInfo());
+                exit();
+            }
+
+            if (!$this->contactInfoId){
+                $stmt = "INSERT INTO ".self::TABLE_NAME;
+                $stmt .= " VALUES (NULL";
+                {@template:insert_first_field}
+                {@template:insert_remaining_fields}
+                $stmt .= "');";
+                $count = $db->exec($stmt);
+                if ($count === false){
+                    print_r('Exec stmt: '.$stmt);
+                    print_r($db->errorInfo());
+                }
+            }
+            else { // this is an update
+                $stmt = "UPDATE ".self::TABLE_NAME." SET ". {@template:update_first_column};
+                {@template:update_remaining_fields}
+                $stmt .= "' WHERE ". {@template:update_key};
+                $stmt .= ";";
+
+                $count = $db->exec($stmt);
+                if ($count === false){
+                    print_r('Exec stmt: '.$stmt);
+                    print_r($db->errorInfo());
+                }
+            }
+        }
+        else {
+            print_r($db->errorInfo());
+        }
+    }
+
+    public function delete(){
+        if (is_int($this->contactInfoId)){
+            if ($db = SqlitePDO::open(self::DATABASE))
+            {
+                $stmt = "DELETE FROM ".self::TABLE_NAME." WHERE ". {@template:delete_key} . ";";
+                $count = $db->exec($stmt, $this->err_msg);
+                if ($count === false){
+                    print_r($db->errorInfo());
+                }
+            }
+
+        }
+    }
+}
